@@ -33,12 +33,39 @@ describe 'pre_command is set' do
   end
 end
 
+describe 'command_prefix is set' do
+  let(:command_prefix) { 'LANG=C' }
+  context file('/etc/passwd') do
+    it { should be_file }
+    its(:command) { should eq 'LANG=C test -f /etc/passwd' }
+  end
+end
+
+describe 'command_prefix and re_command are set' do
+  let(:command_prefix) { 'LANG=C' }
+  let(:pre_command) { 'source ~/.zshrc' }
+  context file('/etc/passwd') do
+    it { should be_file }
+    its(:command) { should eq 'LANG=C source ~/.zshrc && test -f /etc/passwd' }
+  end
+end
+
 describe 'path and pre_command are set' do
   let(:path) { '/sbin:/usr/sbin' }
   let(:pre_command) { 'source ~/.zshrc' }
   context file('/etc/passwd') do
     it { should be_file }
     its(:command) { should eq 'env PATH=/sbin:/usr/sbin:$PATH source ~/.zshrc && env PATH=/sbin:/usr/sbin:$PATH test -f /etc/passwd' }
+  end
+end
+
+describe 'path, pre_command and command_prefix are set' do
+  let(:path) { '/sbin:/usr/sbin' }
+  let(:pre_command) { 'source ~/.zshrc' }
+  let(:command_prefix) { 'LANG=C' }
+  context file('/etc/passwd') do
+    it { should be_file }
+    its(:command) { should eq 'LANG=C env PATH=/sbin:/usr/sbin:$PATH source ~/.zshrc && env PATH=/sbin:/usr/sbin:$PATH test -f /etc/passwd' }
   end
 end
 

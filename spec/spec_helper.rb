@@ -32,6 +32,7 @@ module SpecInfra
         def run_command(cmd)
           cmd = build_command(cmd.to_s)
           cmd = add_pre_command(cmd)
+          cmd = add_command_prefix(cmd)
           do_run cmd
         end
       end

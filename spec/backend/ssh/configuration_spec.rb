@@ -49,6 +49,22 @@ describe 'pre_command is set and user is root' do
   end
 end
 
+describe 'pre_command and command_prefix are set and user is root' do
+  before :all do
+    RSpec.configure do |c|
+      ssh.stub(:options) { { :user => 'root' } }
+      c.ssh = ssh
+    end
+  end
+
+  let(:command_prefix) { 'LANG=C' }
+  let(:pre_command) { 'source ~/.zshrc' }
+  context file('/etc/passwd') do
+    it { should be_file }
+    its(:command) { should eq 'LANG=C source ~/.zshrc && test -f /etc/passwd' }
+  end
+end
+
 describe 'pre_command is set and user is non-root' do
   before :all do
     RSpec.configure do |c|

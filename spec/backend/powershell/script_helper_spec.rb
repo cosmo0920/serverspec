@@ -24,6 +24,26 @@ eof
   end
 end
 
+describe 'add command-prefix' do
+  before :each do
+    SpecInfra.configuration.command_prefix = 'chcp 437'
+  end
+
+  it "should prefix the command with the path instruction" do
+    cmd = add_command_prefix('run_script -f param')
+    cmd.should eq <<-eof
+if (chcp 437)
+{
+run_script -f param
+}
+eof
+  end
+
+  after :each do
+    SpecInfra.configuration.command_prefix = nil
+  end
+end
+
 describe 'add pre-command' do
   before :each do
     SpecInfra.configuration.pre_command = 'test_pre_command'
