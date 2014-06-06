@@ -15,6 +15,23 @@ package('invalid-package') do
   it { should_not be_installed.by('pacman') }
 end
 
+describe package('community/vagrant') do
+  it { should be_installed.by('yaourt') }
+end
+
+package('invalid-package') do
+  it { should_not be_installed.by('yaourt') }
+end
+
+describe package('community/vagrant') do
+  it { should be_installed.by('yaourt').with_version('1.6.3-1') }
+  its(:command) { should eq "yaourt -Q | grep community/vagrant 1.6.3-1" }
+end
+
+describe package('community/vagrant') do
+  it { should_not be_installed.by('yaourt').with_version('invalid-version') }
+end
+
 describe package('jekyll') do
   it { should be_installed.by('gem') }
   its(:command) { should eq "gem list --local | grep -w -- \\^jekyll" }
